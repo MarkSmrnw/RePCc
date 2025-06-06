@@ -1,3 +1,7 @@
 # logs
 scripts/logs/
 scripts/logs/*
+
+#pycache
+scripts/__pycache__/
+scripts/__pycache__/*
