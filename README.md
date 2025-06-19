@@ -1,4 +1,5 @@
 # RePCc
+<<<<<<< HEAD
 RePCc (Remote PC Control) is a little project to make my PC remotely controlled from my phone via WebUI.
 
 
