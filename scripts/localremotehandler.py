@@ -4,7 +4,7 @@ import threading
 import datetime
 import os
 
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 
 PORT = 8000
@@ -71,7 +71,9 @@ CORS(flask_app)
 
 @flask_app.route('/ctl/shutdown')
 def shutdown():
-    write_to_log("SHUTDOWN CALLED LMAO XD")
+    write_to_log("Shutdown called..")
+    os.system("shutdown -s -t 10")
+    return jsonify({'message':'Shutdown success.'}), 200
 
 
 def start_server():

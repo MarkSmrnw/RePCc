@@ -31,8 +31,7 @@ class LocalRemoteService(win32serviceutil.ServiceFramework):
         try:
             stop_server()
         except:
-            pass
-            
+            pass            
         win32event.SetEvent(self.hWaitStop)
 
     def SvcDoRun(self):
@@ -47,7 +46,16 @@ class LocalRemoteService(win32serviceutil.ServiceFramework):
                 "protocol=TCP", "localport=8000"
             ], check=False)
         except:
-            pass 
+            pass
+        
+        try:
+            subprocess.run([
+                "netsh", "advfirewall", "firewall", "add", "rule",
+                "name=Local PC Remote 8080", "dir=in", "action=allow",
+                "protocol=TCP", "localport=8080"
+            ], check=False)
+        except:
+            pass
         
         create_log_file()
         write_to_log("Service started")
