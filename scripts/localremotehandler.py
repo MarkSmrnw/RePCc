@@ -4,7 +4,11 @@ import threading
 import datetime
 import os
 
+from flask import Flask
+from flask_cors import CORS
+
 PORT = 8000
+FLASKPORT = 8080
 LOG_FILE_PATH = None
 httpd = None  # Global reference to server
 
@@ -15,6 +19,15 @@ class QuietHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     
     def log_message(self, format, *args):
         pass
+
+    def do_GET(self):
+        if self.path == "/":
+            self.path = "/ui.html"
+        return super().do_GET()
+
+    def end_headers(self):
+        self.send_header("Access-Control-Allow-Origin", "*")
+        super().end_headers()
 
 def write_to_log(message, level="INFO"):
     """Writes a message to the most recent log file."""
@@ -51,6 +64,16 @@ def create_log_file():
     LOG_FILE_PATH = latest_path
     return latest_path
 
+# REQUESTS
+
+flask_app = Flask(__name__)
+CORS(flask_app)
+
+@flask_app.route('/ctl/shutdown')
+def shutdown():
+    write_to_log("SHUTDOWN CALLED LMAO XD")
+
+
 def start_server():
     global httpd
     try:
@@ -71,14 +94,24 @@ def stop_server():
         httpd.server_close()
         write_to_log("Server stopped")
 
-if __name__ == "__main__":
-    create_log_file()
+def flask_run():
+    write_to_log("Starting FLASK")
+    write_to_log(f"Running FLASK on port {FLASKPORT}")
+    flask_app.run(debug=False, host="0.0.0.0", port=FLASKPORT)
+
+def run():
     write_to_log("Application started")
 
     server_thread = threading.Thread(target=start_server, daemon=True)
+    api_thread = threading.Thread(target=flask_run)
     server_thread.start()
+    api_thread.start()
 
     try:
         server_thread.join()
     except KeyboardInterrupt:
         write_to_log("Server stopped.", "INFO")
+
+if __name__ == "__main__":
+    create_log_file()
+    run()

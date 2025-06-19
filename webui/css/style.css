@@ -18,6 +18,9 @@ body{
     margin-right: auto;
     margin-left: auto;
     margin-top: 2%;
+
+    background-color: rgb(24, 24, 24);
+    border-style: none;
 }
 
 /* IDs CHILDREN */

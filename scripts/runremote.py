@@ -6,15 +6,15 @@ import sys
 import os
 import subprocess
 import threading
-import time
 
 sys.path.append(os.path.dirname(__file__))
-from localremotehandler import create_log_file, write_to_log, start_server, stop_server
+from localremotehandler import create_log_file, write_to_log, run, stop_server
 
 class LocalRemoteService(win32serviceutil.ServiceFramework):
     _svc_name_ = "LocalPCRemote"
     _svc_display_name_ = "Local computer remote"
     _svc_description_ = "WebUI remote used for controlling your Desktop using a phone."
+    _svc_start_type_ = win32service.SERVICE_AUTO_START
 
     def __init__(self, args):
         win32serviceutil.ServiceFramework.__init__(self, args)
@@ -66,7 +66,7 @@ class LocalRemoteService(win32serviceutil.ServiceFramework):
 
     def _run_server(self):
         try:
-            start_server()
+            run()
         except Exception as E:
             write_to_log(f"Service error: {str(E)}", "ERROR")
 

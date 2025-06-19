@@ -7,18 +7,156 @@
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" href="symbols/remoteico.ico" type="image/x-icon">
+
+    <meta meta name="viewport" content= 
+            "width=device-width, user-scalable=no" />
 </head>
+<style>
+/* TAGS */
+body{
+    background-color: rgb(24, 24, 24);
+    overflow: hidden;
+}
+
+/* IDs */
+#title{
+    font-size: clamp(1.5rem, 4rem, 6rem);
+
+    margin-right: auto;
+
+    color: white;
+    font-family: monospace, 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+#powerbutton {
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 2%;
+
+    background-color: rgb(24, 24, 24);
+    border-style: none;
+
+    background-image: url("symbols/power.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+
+    aspect-ratio: 1/1;
+
+    min-width: 50px;
+    max-width: 100px;
+}
+
+#settingsbutton {
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 2%;
+
+    background-color: rgb(24, 24, 24);
+    border-style: none;
+
+    background-image: url("symbols/settings.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+
+    aspect-ratio: 1/1;
+
+    min-width: 50px;
+    max-width: 100px;
+}
+
+/* IDs ACTIONS */
+    
+    #powerbutton:active{
+        background-color: red;
+        border-radius: 50%;
+        filter: brightness(1.5);
+    }
+
+    #powerbutton.active-touch{
+        background-color: red;
+        border-radius: 50%;
+        filter: brightness(1.5);
+    }
+
+    #powerbutton:hover{
+        background-color: red;
+        border-radius: 50%;
+        filter: brightness(1.5);
+    }
+
+
+    #settingsbutton:active{
+        background-color: rgb(0, 0, 0);
+        border-radius: 50%;
+        filter: brightness(1.5);
+    }
+
+    #settingsbutton.active-touch{
+        background-color: rgb(0, 0, 0);
+        border-radius: 50%;
+        filter: brightness(1.5);
+    }
+
+    #settingsbutton:hover{
+        background-color: rgb(0, 0, 0);
+        border-radius: 50%;
+        filter: brightness(1.5);
+    }
+
+/* Classes */
+
+*.unselectable {
+   -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+}
+</style>
 <body>
 
     <div class="container">
-        <span id="title"> <!-- TITLE-->
+        <span id="title" class="unselectable">
             RePCc
         </span>
 
-        <div class="d-flex">
-            <div id = "powerbutton">
-                <img src="symbols/power.svg">
+        <div class="row">
+            <div class="col-6 d-flex">
+                <button id="powerbutton" data-bs-toggle="modal" data-bs-target="#shutdownModal"></button>
+            </div>
+            <div class="col-6 d-flex">
+                <button id="settingsbutton" data-bs-toggle="modal" data-bs-target="#settingModal"></button>
+            </div>
+        </div>
+
+        <!--SHUT OFF-->
+        <div class="modal fade" id="shutdownModal" data-bs-theme="dark" tabindex="-1" aria-labelledby="shutdownModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Shutdown</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="color: white;"> Are you sure you want to shut off your computer? </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Yes</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <!--SETTINGS-->
+        <div class="modal fade" id="settingModal" data-bs-theme="dark" tabindex="-1" aria-labelledby="settingsModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Setting</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="color: white;"> awa :3</div>
+                </div>
             </div>
         </div>
     </div>
