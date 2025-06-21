@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
     const powerButton = document.getElementById('powerbutton')
-    const confirmShutdownButton = document.getElementById("BUTTON_CONFIRMSHUTDOWN")
     
     if (powerButton) {
         powerButton.addEventListener('touchstart', function(e) {
