@@ -18,7 +18,7 @@ if %errorlevel% neq 0 (
 echo Service installed successfully!
 echo.
 echo Configuring service for auto-start...
-sc config LocalPCRemote start= delayed-auto
+sc config LocalPCRemote start= auto
 if %errorlevel% neq 0 (
     echo ERROR: Failed to configure auto-start!
     pause
