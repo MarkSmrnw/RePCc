@@ -4,6 +4,8 @@ RePCc (Remote PC Control) is a little project to make my PC remotely controlled 
 
 ## Installation Guide
 
+!!! GUIDE IS OUT OF DATE !!!
+
 Here are the steps:
 - Install the project and navigate to `./scripts/` inside the RePCc directory.
 - Run the `installservice.bat` file as administrator. This will install a Windows service that hosts the web server and handles requests.
