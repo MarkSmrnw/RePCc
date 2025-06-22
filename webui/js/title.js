@@ -7,7 +7,7 @@ let canAnimateCursor = true
 let canSetText = true
 let isTabVisible = true
 
-let messages = ["RePCc", "Erm...", "Remote", "PC", "joink", ":3", "a", "bored", "wsp", "aaaaaaaa", "o", "SMRNW", "pawsome", "BASED", "haiiiiii", "DUDE"]
+let messages = ["RePCc", "Erm...", "Remote", "PC", "joink", ":3", "a", "bored", "wsp", "aaaaaaaa", "o", "SMRNW", "pawsome", "BASED", "haiiiiii", "DUDE", "AYE"]
 let currentmsg = "RePCc"
 
 const title = document.getElementById("title")

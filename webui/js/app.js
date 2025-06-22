@@ -1,7 +1,25 @@
 const ADDACTIONBUTTON = document.getElementById("addActionButton")
 const ADDACTIONCONFIRM = document.getElementById("confirmAddAction")
 
+const ACTIONSETMOUSEBUTTON = document.getElementById("ACTION_MOUSE")
+
 let INTERACTCOOLDOWN = false
+let CURSORPOS_X = null
+let CURSORPOS_Y = null
+
+function getCookieValue(name) {
+    const cookies = document.cookie.split(';')
+    for (let cookie of cookies) {
+        const [cookieName, cookieValue] = cookie.trim().split('=')
+        if (cookieName === name) {
+            const value = cookieValue || ''
+            const decoded = decodeURIComponent(value)
+            return decoded.replace(/=+$/, '')
+        }
+    }
+    return null
+}
+
 
 document.addEventListener("DOMContentLoaded", function() {
     
@@ -42,11 +60,51 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    async function SetCurrentCursorPos() {
+        const IP = getCookieValue("ip")
+        if (IP) {
+            let response = await fetch("http://"+IP+":8080/mouse/getpos")
+            if (response.ok) {
+                let data = await response.json()
+
+                CURSORPOS_X = data['position'][0]
+                CURSORPOS_Y = data['position'][1]
+
+                console.log(CURSORPOS_X, CURSORPOS_Y)
+            }
+        }
+    }
+
+    async function PostAction() {
+        const NAMEINPUT = document.getElementById("ACTION_TITLE")
+
+        // CONTINUE HERE!!!!!!!!!!!!!!!!!!!
+        // SO I KNOW WHERE I LEFT OFF :D
+    }
+
     ADDACTIONCONFIRM.addEventListener("touchend", function(ev) {
         ev.preventDefault()
         AddAction()
     })
     ADDACTIONCONFIRM.addEventListener("click", function() {
         AddAction()
+    })
+
+    ACTIONSETMOUSEBUTTON.addEventListener("touchend", function(ev) {
+        ev.preventDefault()
+        SetCurrentCursorPos()
+    })
+
+    ACTIONSETMOUSEBUTTON.addEventListener("click", function() {
+        SetCurrentCursorPos()
+    })
+
+    ADDACTIONBUTTON.addEventListener("touchend", function(ev) {
+        ev.preventDefault()
+
+    })
+
+    ADDACTIONBUTTON.addEventListener("click", function() {
+
     })
 })

@@ -3,6 +3,7 @@ import http.server
 import threading
 import datetime
 import win32gui
+import win32api
 import os
 
 from flask import Flask, jsonify
@@ -59,7 +60,7 @@ def create_log_file():
             counter+=1
 
     with open(latest_path, "w") as log_file:
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Fixed typo
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         log_file.write(f"[{timestamp}] [INFO] LOG FILE CREATED\n")
 
     LOG_FILE_PATH = latest_path
@@ -84,8 +85,18 @@ def getMousePos():
         write_to_log(cursor_pos)
         return jsonify({"position":cursor_pos}), 200
     except Exception as E:
-        write_to_log(E, "ERROR")
-        return jsonify({"error":E}), 500
+        write_to_log(str(E), "ERROR")
+        return jsonify({"error":str(E)}), 500
+    
+@flask_app.route('/mouse/setpos/<int:x>/<int:y>', methods=['POST'])
+def setMousePos(x,y):
+    write_to_log(f"Setting mouse pos to {x}, {y}")
+    try:
+        win32api.SetCursorPos((x,y))
+        return jsonify({"message":"Successfully set cursor pos"}), 200
+    except Exception as E:
+        write_to_log(str(E), "ERROR")
+        return jsonify({'error':str(E)}), 500
 
 def start_server():
     global httpd
@@ -114,6 +125,8 @@ def flask_run():
 
 def run():
     write_to_log("Application started")
+
+    write_to_log("Running version DEV 0.01")
 
     server_thread = threading.Thread(target=start_server, daemon=True)
     api_thread = threading.Thread(target=flask_run)
