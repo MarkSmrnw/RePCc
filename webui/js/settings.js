@@ -1,4 +1,5 @@
 const STATUS_DIV = document.getElementById("status")
+const STATUS_GLOBAL = document.getElementById("statusglobal")
 
 const HOSTIP_CONFIRM = document.getElementById("settings_ipset")
 const HOSTIP_TEXTINPUT = document.getElementById("settings_ipinput")
@@ -6,6 +7,11 @@ const HOSTIP_TEXTINPUT = document.getElementById("settings_ipinput")
 // VALUES
 
 let HOST_IP = null
+
+function setStatus(text) {
+    STATUS_DIV.innerText = text
+    STATUS_GLOBAL.innerText = text
+}
 
 function checkIP(IP) {
 
@@ -23,15 +29,16 @@ function checkIP(IP) {
 
 function setIP(){
     if (checkIP(HOSTIP_TEXTINPUT.value)) {
-        STATUS_DIV.innerText = "IP OK!"
-
-        // Set cookie with proper formatting and attributes
+        setStatus("IP OK!")
         document.cookie = "ip=" + encodeURIComponent(HOSTIP_TEXTINPUT.value) + "; path=/; SameSite=Lax"
-    } else {STATUS_DIV.innerHTML = "IP ILLEGAL!"}
+    } else {setStatus("IP ILLEGAL!")}
 }
 
 HOSTIP_CONFIRM.addEventListener("touchend", function(event) {
     event.preventDefault()
+    setIP()
+})
+HOSTIP_CONFIRM.addEventListener("click", function() {
     setIP()
 })
 

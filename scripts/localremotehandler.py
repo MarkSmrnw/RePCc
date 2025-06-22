@@ -2,6 +2,7 @@ import socketserver
 import http.server
 import threading
 import datetime
+import win32gui
 import os
 
 from flask import Flask, jsonify
@@ -75,6 +76,16 @@ def shutdown():
     os.system("shutdown -s -t 10")
     return jsonify({'message':'Shutdown success.'}), 200
 
+@flask_app.route('/mouse/getpos')
+def getMousePos():
+    write_to_log("Getting mouse position..")
+    try:
+        cursor_pos = win32gui.GetCursorPos()
+        write_to_log(cursor_pos)
+        return jsonify({"position":cursor_pos}), 200
+    except Exception as E:
+        write_to_log(E, "ERROR")
+        return jsonify({"error":E}), 500
 
 def start_server():
     global httpd
