@@ -2,18 +2,19 @@
 RePCc (Remote PC Control) is a little project to make my PC remotely controlled from my phone via WebUI.
 
 
-## Installation Guide
+## Installation guide
 
-!!! GUIDE IS OUT OF DATE !!!
+### You will need python 3.12.5 for this.
 
 Here are the steps:
-- Install the project and navigate to `./scripts/` inside the RePCc directory.
-- Run the `installservice.bat` file as administrator. This will install a Windows service that hosts the web server and handles requests.
-- You are all set! Access the WebUI using `[HOST_PC_IP]:8000`
+- Run the batch inside of `/scripts/`, called `enable.bat`. This will create a shortcut inside of Startup apps inside of `%APPDATA%/Microsoft/Windows/Start Menu/Programs/Startup`
+- After running, the webserver and command handler should always deploy windowless.
+- You can access the WEBUI via `[SERVER-IP]:8000`
 
-The service will automatically configure to run on boot (DELAYED-AUTO).
-You can uninstall or stop the service by:
+Notes:
+- The script automatically creates firewall rules for PRIVATE NETWORKS. If you cant access the remote via IP:8000, make sure your servers network is set to PRIVATE!
 
-- Running the `uninstallservice.bat` file inside `./scripts/` as administrator
 
-You may need to reboot your PC.
+## Removal guide
+
+- Run the `disable.bat` batch inside of scripts, it'll remove everything, including the firewall rules.
