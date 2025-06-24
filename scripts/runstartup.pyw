@@ -20,8 +20,12 @@ def setup_firewall():
             "name=Local PC Remote 8080", "dir=in", "action=allow",
             "protocol=TCP", "localport=8080"
         ], check=False, creationflags=subprocess.CREATE_NO_WINDOW)
-    except:
-        pass
+    except Exception as e:
+        try:
+            from localremotehandler import write_to_log
+            write_to_log(f"Firewall setup error: {e}", "ERROR")
+        except:
+            print(f"Firewall setup error: {e}")
 
 if __name__ == "__main__":
     time.sleep(5)

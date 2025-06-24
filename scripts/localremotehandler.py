@@ -185,14 +185,19 @@ def run():
     write_to_log("Running version DEV 0.02")
 
     server_thread = threading.Thread(target=start_server, daemon=True)
-    api_thread = threading.Thread(target=flask_run)
+    api_thread = threading.Thread(target=flask_run, daemon=True)
     server_thread.start()
     api_thread.start()
 
     try:
-        server_thread.join()
+        # Wait for both threads
+        while server_thread.is_alive() or api_thread.is_alive():
+            threading.Event().wait(1)
     except KeyboardInterrupt:
         write_to_log("Server stopped.", "INFO")
+    finally:
+        stop_server()
+        write_to_log("Application shutdown complete")
 
 if __name__ == "__main__":
     create_log_file()
