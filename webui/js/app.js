@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // Events
 
-    function AddAction() {
+    function AddAction(title) {
         if (INTERACTCOOLDOWN) {return}
         const actionWrapper = document.getElementById("actionWrapper")
         const actionChildren = actionWrapper.children[0].children
@@ -38,16 +38,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (parent) {
             parent.innerHTML = parent.innerHTML + `
-    <button class="actionButton" onclick="presstest()">
-        ACTION TITLE
+    <button class="actionButton" id=`+title+` onclick="presstest()">
+        `+title+`
     </button>
             `
         }
         else {
             actionWrapper.children[0].innerHTML = actionWrapper.children[0].innerHTML + `
     <div class="d-flex actionButtonWrapper" style="margin-bottom: 5%;">
-        <button class="actionButton" onclick="presstest()">
-            ACTION TITLE
+        <button class="actionButton" id=`+title+` onclick="presstest()">
+            `+title+`
         </button>
     </div>
             `
@@ -69,25 +69,45 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 CURSORPOS_X = data['position'][0]
                 CURSORPOS_Y = data['position'][1]
-
-                console.log(CURSORPOS_X, CURSORPOS_Y)
             }
-        }
+        } else { console.log("NO IP!") }
     }
 
     async function PostAction() {
         const NAMEINPUT = document.getElementById("ACTION_TITLE")
+        const IP = getCookieValue("ip")
 
-        // CONTINUE HERE!!!!!!!!!!!!!!!!!!!
-        // SO I KNOW WHERE I LEFT OFF :D
+        if (CURSORPOS_X && CURSORPOS_Y) {
+            
+            response = await fetch("http://"+IP+":8080/actions/postnew", {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({
+                    "name":NAMEINPUT.value,
+                    "pos":{
+                        "x":CURSORPOS_X,
+                        "y":CURSORPOS_Y
+                    }
+                })
+            })
+
+            if (response.ok) {
+                AddAction(NAMEINPUT.value)
+            }
+            
+
+        } else {
+            if (IP) {STATUS_GLOBAL.innerText = "CURSOR POS HAS NOT BEEN SET!"}
+            else {STATUS_GLOBAL.innerText = "YOU HAVE TO SET YOUR IP!"} 
+        }
     }
 
     ADDACTIONCONFIRM.addEventListener("touchend", function(ev) {
         ev.preventDefault()
-        AddAction()
+        PostAction()
     })
     ADDACTIONCONFIRM.addEventListener("click", function() {
-        AddAction()
+        PostAction()
     })
 
     ACTIONSETMOUSEBUTTON.addEventListener("touchend", function(ev) {
@@ -97,14 +117,5 @@ document.addEventListener("DOMContentLoaded", function() {
 
     ACTIONSETMOUSEBUTTON.addEventListener("click", function() {
         SetCurrentCursorPos()
-    })
-
-    ADDACTIONBUTTON.addEventListener("touchend", function(ev) {
-        ev.preventDefault()
-
-    })
-
-    ADDACTIONBUTTON.addEventListener("click", function() {
-
     })
 })

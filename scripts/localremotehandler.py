@@ -4,9 +4,10 @@ import threading
 import datetime
 import win32gui
 import win32api
+import json
 import os
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 PORT = 8000
@@ -24,6 +25,7 @@ class QuietHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == "/":
+            write_to_log(f"HTTP: serving ui.html to client {self.client_address[0]}")
             self.path = "/ui.html"
         return super().do_GET()
 
@@ -97,12 +99,66 @@ def setMousePos(x,y):
     except Exception as E:
         write_to_log(str(E), "ERROR")
         return jsonify({'error':str(E)}), 500
+    
+@flask_app.route('/actions/postnew', methods=['POST'])
+def makeNewAction():
+    ''' Data:
+        - mouse pos 
+        - label
+
+        {
+            "name":"LABEL",
+            "pos":{
+                "x":x,
+                "y":y
+            }
+        }
+    '''
+
+    write_to_log("Request recieved to POST new action.")
+
+    try:
+        if request.is_json:
+            data = request.json
+
+            write_to_log(data)
+
+            if data["name"] and data["pos"] and data["pos"]["x"] and data["pos"]["y"]:
+
+                script_dir = os.path.dirname(__file__)
+                actions_dir = os.path.join(script_dir, "actions")
+                json_file_path = os.path.join(actions_dir, f"{data['name']}.json")
+
+                if os.path.exists(json_file_path):
+                    write_to_log("Requested name for action already exsists.")
+                    return jsonify({'error':'bad name'}), 403
+                else:
+                    write_to_log("Requested name for action is avalible.")
+
+                    with open(json_file_path, "w")as file:
+                        json.dump(data, file, indent=2)
+
+                        file.close()
+
+                    write_to_log("New actions file created.")
+
+                    return jsonify({'message':'missing items'}), 200
+            else:
+                write_to_log("Request has missing items. 400", "WARN")
+                return jsonify({'error':'missing items'}), 400
+        else:
+            write_to_log("Request is not json. 400", "WARN")
+            return jsonify({'error':'not json'}), 400
+    except Exception as E:
+
+        write_to_log(str(E), "ERROR")
+        return jsonify({'error':str(E)}), 500
 
 def start_server():
     global httpd
     try:
         write_to_log("Starting server")
-        httpd = socketserver.TCPServer(("0.0.0.0", PORT), QuietHTTPRequestHandler)
+        httpd = socketserver.ThreadingTCPServer(("0.0.0.0", PORT), QuietHTTPRequestHandler)
         write_to_log(f"Starting server on port {PORT}")
         write_to_log(f"Serving directory: {os.path.join(os.path.dirname(os.path.dirname(__file__)), 'webui')}")
         httpd.serve_forever()
@@ -126,7 +182,7 @@ def flask_run():
 def run():
     write_to_log("Application started")
 
-    write_to_log("Running version DEV 0.01")
+    write_to_log("Running version DEV 0.02")
 
     server_thread = threading.Thread(target=start_server, daemon=True)
     api_thread = threading.Thread(target=flask_run)
