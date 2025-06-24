@@ -11,9 +11,22 @@ set "startup_folder=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
 set "target_path=%CD%\runstartup.pyw"
 set "shortcut_path=%startup_folder%\LocalPCRemote.lnk"
 
-echo Creating invisible startup shortcut...
+echo Testing Python installation...
+py -3.12 --version
+if %errorlevel% neq 0 (
+    echo ERROR: Python 3.12 not found!
+    pause
+    exit /b 1
+)
+
+echo Finding Python installation path...
 for /f "tokens=*" %%i in ('py -3.12 -c "import sys; print(sys.executable)"') do set PYTHON_PATH=%%i
-set PYTHONW_PATH=%%PYTHON_PATH:python.exe=pythonw.exe%%
+set PYTHONW_PATH=%PYTHON_PATH:python.exe=pythonw.exe%
+
+echo Python path: %PYTHON_PATH%
+echo Pythonw path: %PYTHONW_PATH%
+
+echo Creating invisible startup shortcut...
 powershell -Command "& {$WshShell = New-Object -comObject WScript.Shell; $Shortcut = $WshShell.CreateShortcut('%shortcut_path%'); $Shortcut.TargetPath = '%PYTHONW_PATH%'; $Shortcut.Arguments = '\"%target_path%\"'; $Shortcut.WorkingDirectory = '%CD%'; $Shortcut.WindowStyle = 7; $Shortcut.Save()}"
 
 if %errorlevel% neq 0 (
@@ -31,22 +44,6 @@ netsh advfirewall firewall add rule name="Local PC Remote 8080" dir=in action=al
 
 echo.
 echo Starting application invisibly...
-echo Testing Python installation...
-py -3.12 --version
-if %errorlevel% neq 0 (
-    echo ERROR: Python 3.12 not found!
-    pause
-    exit /b 1
-)
-
-echo Finding Python installation path...
-for /f "tokens=*" %%i in ('py -3.12 -c "import sys; print(sys.executable)"') do set PYTHON_PATH=%%i
-set PYTHONW_PATH=%PYTHON_PATH:python.exe=pythonw.exe%
-
-echo Python path: %PYTHON_PATH%
-echo Pythonw path: %PYTHONW_PATH%
-
-echo Starting invisible process...
 start "" "%PYTHONW_PATH%" runstartup.pyw
 
 echo Waiting for process to start...
