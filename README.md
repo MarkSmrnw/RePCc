@@ -15,8 +15,6 @@ Notes:
 - The script automatically creates firewall rules for PRIVATE NETWORKS. If you cant access the remote via IP:8000, make sure your servers network is set to PRIVATE!
 
 
-The service will automatically configure to run on boot (DELAYED-AUTO).
-
 ## Removal guide
 
 - Run the `disable.bat` batch inside of scripts, it'll remove everything, including the firewall rules.
