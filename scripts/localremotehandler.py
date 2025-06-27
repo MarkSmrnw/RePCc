@@ -4,6 +4,7 @@ import threading
 import datetime
 import win32gui
 import win32api
+import socket
 import json
 import os
 
@@ -190,7 +191,6 @@ def run():
     api_thread.start()
 
     try:
-        # Wait for both threads
         while server_thread.is_alive() or api_thread.is_alive():
             threading.Event().wait(1)
     except KeyboardInterrupt:

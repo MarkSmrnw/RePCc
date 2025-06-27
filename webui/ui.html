@@ -222,10 +222,7 @@ body{
                 <div class="modal-body" style="color: white;">
 
                     <div id="status"></div>
-                    HOST IP:
-                    <input type="text" id="settings_ipinput" placeholder="192.168.0.1">
-                    <input type="button" value="SET" id="settings_ipset">
-
+                    No settings avalible
                 </div>
                 </div>
             </div>
@@ -259,12 +256,17 @@ body{
         // GLOBALS
 
         const STATUS_GLOBAL = document.getElementById("statusglobal")
+
+        function hostIp() {
+            const ip = location.host.split(":")[0]
+            return ip
+        }
         
     </script>
 
     <script src="js/app.js"></script>
     <script src="js/title.js"></script>
-    <script src="js/settings.js"></script>
+    <!-- <script src="js/settings.js"></script> -->
 
     <script>
 
@@ -272,19 +274,6 @@ body{
 
         function presstest() {
             STAUSOBJ.innerText = Math.random() + " test"
-        }
-
-        function getCookieValue(name) {
-            const cookies = document.cookie.split(';')
-            for (let cookie of cookies) {
-                const [cookieName, cookieValue] = cookie.trim().split('=')
-                if (cookieName === name) {
-                    const value = cookieValue || ''
-                    const decoded = decodeURIComponent(value)
-                    return decoded.replace(/=+$/, '')
-                }
-            }
-            return null
         }
 
         const BUTTON_CONFIRMSHUTDOWN = document.getElementById("BUTTON_CONFIRMSHUTDOWN")
@@ -302,43 +291,18 @@ body{
         }
 
         function shutdown() {
-            const IP = getCookieValue("ip")
-            if (IP) {
-                fetch("http://"+IP+":8080/ctl/shutdown")
-                .then(response => {
-                    if (response.ok) {
-                        STAUSOBJ.innerText = "SHUTDOWN SEND"
-                    } else {
-                        STAUSOBJ.innerText = "SHUTDOWN FAILED: " + response.status
-                    }
-                })
-                .catch(error => {
-                    STAUSOBJ.innerText = "ERROR: " + error.message
-                })
-            } else {
-                STAUSOBJ.innerText = "IP NOT SET!"
-            }
+            fetch("http://"+hostIp()+":8080/ctl/shutdown")
+            .then(response => {
+                if (response.ok) {
+                    STAUSOBJ.innerText = "SHUTDOWN SEND"
+                } else {
+                    STAUSOBJ.innerText = "SHUTDOWN FAILED: " + response.status
+                }
+            })
+            .catch(error => {
+                STAUSOBJ.innerText = "ERROR: " + error.message
+            })
         }
-
-        /*
-        async function getMouse() {
-            const IP = getCookieValue("ip")
-            if (IP) {
-                response = await fetch("http://"+IP+":8080/mouse/getpos")
-                
-                data = await response.json()
-                console.log("x: " + data["position"][0])
-                console.log("y: " + data["position"][1])
-            }
-        }
-            */
-
-
-        // 
-
-        if (getCookieValue("ip") == null) {
-            STAUSOBJ.innerText = "IP NOT SET!"
-        } else {STAUSOBJ.innerText = "IP set."}
 
     </script>
 </body>

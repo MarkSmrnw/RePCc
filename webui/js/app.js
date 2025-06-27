@@ -7,19 +7,6 @@ let INTERACTCOOLDOWN = false
 let CURSORPOS_X = null
 let CURSORPOS_Y = null
 
-function getCookieValue(name) {
-    const cookies = document.cookie.split(';')
-    for (let cookie of cookies) {
-        const [cookieName, cookieValue] = cookie.trim().split('=')
-        if (cookieName === name) {
-            const value = cookieValue || ''
-            const decoded = decodeURIComponent(value)
-            return decoded.replace(/=+$/, '')
-        }
-    }
-    return null
-}
-
 
 document.addEventListener("DOMContentLoaded", function() {
     
@@ -61,25 +48,21 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     async function SetCurrentCursorPos() {
-        const IP = getCookieValue("ip")
-        if (IP) {
-            let response = await fetch("http://"+IP+":8080/mouse/getpos")
-            if (response.ok) {
-                let data = await response.json()
+        let response = await fetch("http://"+hostIp()+":8080/mouse/getpos")
+        if (response.ok) {
+            let data = await response.json()
 
-                CURSORPOS_X = data['position'][0]
-                CURSORPOS_Y = data['position'][1]
-            }
-        } else { console.log("NO IP!") }
+            CURSORPOS_X = data['position'][0]
+            CURSORPOS_Y = data['position'][1]
+        }
     }
 
     async function PostAction() {
         const NAMEINPUT = document.getElementById("ACTION_TITLE")
-        const IP = getCookieValue("ip")
 
         if (CURSORPOS_X && CURSORPOS_Y) {
             
-            response = await fetch("http://"+IP+":8080/actions/postnew", {
+            response = await fetch("http://"+hostIp()+":8080/actions/postnew", {
                 method:'POST',
                 headers:{'Content-Type':'application/json'},
                 body:JSON.stringify({
