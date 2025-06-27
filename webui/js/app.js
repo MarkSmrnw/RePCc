@@ -54,6 +54,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
             CURSORPOS_X = data['position'][0]
             CURSORPOS_Y = data['position'][1]
+
+            ACTIONSETMOUSEBUTTON.style = "background-color: green;"
+            document.getElementById("showmousecoordinates").innerText = CURSORPOS_X + " " + CURSORPOS_Y
         }
     }
 
