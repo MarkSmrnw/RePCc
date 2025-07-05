@@ -7,7 +7,6 @@ let INTERACTCOOLDOWN = false
 let CURSORPOS_X = null
 let CURSORPOS_Y = null
 
-
 document.addEventListener("DOMContentLoaded", function() {
     
     // Events
@@ -88,6 +87,10 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    async function LoadActions() {
+        
+    }
+
     ADDACTIONCONFIRM.addEventListener("touchend", function(ev) {
         ev.preventDefault()
         PostAction()
@@ -104,4 +107,5 @@ document.addEventListener("DOMContentLoaded", function() {
     ACTIONSETMOUSEBUTTON.addEventListener("click", function() {
         SetCurrentCursorPos()
     })
+
 })

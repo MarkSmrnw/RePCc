@@ -4,7 +4,6 @@ import threading
 import datetime
 import win32gui
 import win32api
-import socket
 import json
 import os
 
@@ -14,7 +13,7 @@ from flask_cors import CORS
 PORT = 8000
 FLASKPORT = 8080
 LOG_FILE_PATH = None
-httpd = None  # Global reference to server
+httpd = None 
 
 class QuietHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
@@ -80,7 +79,7 @@ def shutdown():
     os.system("shutdown -s -t 10")
     return jsonify({'message':'Shutdown success.'}), 200
 
-@flask_app.route('/mouse/getpos')
+@flask_app.route('/mouse/getpos', methods=['GET'])
 def getMousePos():
     write_to_log("Getting mouse position..")
     try:
@@ -154,6 +153,33 @@ def makeNewAction():
 
         write_to_log(str(E), "ERROR")
         return jsonify({'error':str(E)}), 500
+
+@flask_app.route('/actions/getall', methods=['GET'])
+def getAllActions():
+    write_to_log("GetActions ALL called")
+
+    scriptDir = os.path.dirname(os.path.abspath(__file__))
+    actionDir = os.path.join(scriptDir, "actions")
+
+    returnHash = {}
+
+    try:
+        for file in os.listdir(actionDir):
+            if os.fsdecode(file).endswith(".json"):
+
+                write_to_log(file)
+
+                with open(os.path.join(actionDir, file), "r") as f:
+                    jsondata = json.load(f)
+
+                    returnHash[ str(len(returnHash)) ] = jsondata["name"]
+                    f.close()
+        
+        write_to_log(returnHash)
+        return jsonify(returnHash), 200
+    except Exception as E:
+        write_to_log(str(E), "ERROR")
+        return jsonify({"error":str(E)}), 500
 
 def start_server():
     global httpd
