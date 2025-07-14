@@ -2,6 +2,7 @@ const ADDACTIONBUTTON = document.getElementById("addActionButton")
 const ADDACTIONCONFIRM = document.getElementById("confirmAddAction")
 
 const ACTIONSETMOUSEBUTTON = document.getElementById("ACTION_MOUSE")
+const ACTIONREMOVEBUTTON = document.getElementById("removeActionButton")
 
 let INTERACTCOOLDOWN = false
 let CURSORPOS_X = null
@@ -24,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (parent) {
             parent.innerHTML = parent.innerHTML + `
-    <button class="actionButton" id=`+title+` onclick="presstest()">
+    <button class="actionButton" id=`+title+` onclick="actionPress(this)">
         `+title+`
     </button>
             `
@@ -32,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
         else {
             actionWrapper.children[0].innerHTML = actionWrapper.children[0].innerHTML + `
     <div class="d-flex actionButtonWrapper" style="margin-bottom: 5%;">
-        <button class="actionButton" id=`+title+` onclick="presstest()">
+        <button class="actionButton" id=`+title+` onclick="actionPress(this)">
             `+title+`
         </button>
     </div>
@@ -88,7 +89,14 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     async function LoadActions() {
-        
+        console.log("LOAD")
+
+        const response = await fetch("http://"+hostIp()+":8080/actions/getall")
+        if (response.ok) {
+            const data = await response.json()
+
+            if (data) for (var key in data) AddAction(data[key])
+        }
     }
 
     ADDACTIONCONFIRM.addEventListener("touchend", function(ev) {
@@ -107,5 +115,18 @@ document.addEventListener("DOMContentLoaded", function() {
     ACTIONSETMOUSEBUTTON.addEventListener("click", function() {
         SetCurrentCursorPos()
     })
+
+    ACTIONREMOVEBUTTON.addEventListener("touched", function(ev){
+        ev.preventDefault()
+        if (REMOVE_MODE == false) REMOVE_MODE = true
+        if (REMOVE_MODE == true) REMOVE_MODE = false
+    })
+
+    ACTIONREMOVEBUTTON.addEventListener("click", function() {
+        if (REMOVE_MODE == false) REMOVE_MODE = true
+        if (REMOVE_MODE == true) REMOVE_MODE = false
+    })
+
+    LoadActions()
 
 })

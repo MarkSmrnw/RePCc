@@ -17,7 +17,7 @@ httpd = None
 
 class QuietHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        webui_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "webui")
+        webui_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "interface")
         super().__init__(*args, directory=webui_dir, **kwargs)
     
     def log_message(self, format, *args):
@@ -164,6 +164,8 @@ def getAllActions():
     returnHash = {}
 
     try:
+        os.makedirs(actionDir, exist_ok=True)
+        
         for file in os.listdir(actionDir):
             if os.fsdecode(file).endswith(".json"):
 
@@ -177,6 +179,25 @@ def getAllActions():
         
         write_to_log(returnHash)
         return jsonify(returnHash), 200
+    except Exception as E:
+        write_to_log(str(E), "ERROR")
+        return jsonify({"error":str(E)}), 500
+    
+@flask_app.route('/actions/start/<string:name>')
+def startAction(name:str):
+    try:
+        scriptDir = os.path.dirname(os.path.abspath(__file__))
+        actionDir = os.path.join(scriptDir, "actions")
+
+        actionFile = os.path.join(actionDir, name+".json")
+        if os.path.exists(actionFile):
+            print("exsists")
+            with open(actionFile, "r") as f:
+                data = json.load(f)
+                print(data)
+
+        return jsonify({"response":"debug"}), 200
+
     except Exception as E:
         write_to_log(str(E), "ERROR")
         return jsonify({"error":str(E)}), 500
