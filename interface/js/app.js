@@ -116,15 +116,27 @@ document.addEventListener("DOMContentLoaded", function() {
         SetCurrentCursorPos()
     })
 
+    // HERE IS THE REMOVE MODE PLEASE DONT OVERSEE IT AGAIN
+
+    function removeStyles(apply=true) {
+
+        if (apply) {
+            const DEL_BUTTON = document.getElementById("removeActionButton")
+
+            DEL_BUTTON.style = "border red 1px 1px 1px 1px"
+        }
+
+    }
+
     ACTIONREMOVEBUTTON.addEventListener("touched", function(ev){
         ev.preventDefault()
-        if (REMOVE_MODE == false) REMOVE_MODE = true
-        if (REMOVE_MODE == true) REMOVE_MODE = false
+        if (REMOVE_MODE == false) {REMOVE_MODE = true}
+        else {REMOVE_MODE = false}
     })
 
     ACTIONREMOVEBUTTON.addEventListener("click", function() {
-        if (REMOVE_MODE == false) REMOVE_MODE = true
-        if (REMOVE_MODE == true) REMOVE_MODE = false
+        if (REMOVE_MODE == false) {REMOVE_MODE = true}
+        else {REMOVE_MODE = false}
     })
 
     LoadActions()

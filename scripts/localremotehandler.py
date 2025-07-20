@@ -4,7 +4,9 @@ import threading
 import datetime
 import win32gui
 import win32api
+import win32con
 import json
+import time
 import os
 
 from flask import Flask, jsonify, request
@@ -106,12 +108,13 @@ def makeNewAction():
         - mouse pos 
         - label
 
-        {
+        ```{
             "name":"LABEL",
             "pos":{
                 "x":x,
                 "y":y
             }
+            "doesClick":bool
         }
     '''
 
@@ -194,7 +197,17 @@ def startAction(name:str):
             print("exsists")
             with open(actionFile, "r") as f:
                 data = json.load(f)
-                print(data)
+                x = data["pos"]["x"]
+                y = data["pos"]["y"]
+
+                time.sleep(.05)
+                win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0,0,0,0)
+                time.sleep(.05)
+                win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0,0,0,0)
+
+                win32api.SetCursorPos((int(x), int(y)))
+
+                write_to_log(f"Moved and clicked. {x}, {y}")
 
         return jsonify({"response":"debug"}), 200
 

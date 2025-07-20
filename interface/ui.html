@@ -194,7 +194,7 @@ body{
                 <button id="addActionButton" data-bs-toggle="modal" data-bs-target="#addActionModal"></button>
             </div>
             <div class="col-3 d-flex">
-                <button id="removeActionButton" onclick=""></button>
+                <button id="removeActionButton" onclick="toggleDelete()"></button>
             </div>
         </div>
 
@@ -291,6 +291,8 @@ body{
 
     <script>
 
+        
+
         const STAUSOBJ = document.getElementById("statusglobal")
 
         function actionPress(button) {
@@ -324,6 +326,7 @@ body{
                 STAUSOBJ.innerText = "ERROR: " + error.message
             })
         }
+
 
     </script>
 </body>
