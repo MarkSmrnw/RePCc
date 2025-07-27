@@ -188,13 +188,14 @@ def getAllActions():
     
 @flask_app.route('/actions/start/<string:name>')
 def startAction(name:str):
+    write_to_log("Starting action...")
+    write_to_log(name)
     try:
         scriptDir = os.path.dirname(os.path.abspath(__file__))
         actionDir = os.path.join(scriptDir, "actions")
 
         actionFile = os.path.join(actionDir, name+".json")
         if os.path.exists(actionFile):
-            print("exsists")
             with open(actionFile, "r") as f:
                 data = json.load(f)
                 x = data["pos"]["x"]
@@ -208,12 +209,39 @@ def startAction(name:str):
                 win32api.SetCursorPos((int(x), int(y)))
 
                 write_to_log(f"Moved and clicked. {x}, {y}")
+                return jsonify({"message":"action was successful"}), 200
 
-        return jsonify({"response":"debug"}), 200
+        else:
+            write_to_log("File does not exsist, nothing to run.", "WARN")
+            return jsonify({"error":"no file found"}), 404
 
     except Exception as E:
         write_to_log(str(E), "ERROR")
         return jsonify({"error":str(E)}), 500
+    
+@flask_app.route('/actions/delete/<string:name>')
+def deleteAction(name:str):
+    write_to_log("Deleting action...")
+    write_to_log(name)
+    try:
+        scriptDir = os.path.dirname(os.path.abspath(__file__))
+        actionDir = os.path.join(scriptDir, "actions")
+
+        actionFile = os.path.join(actionDir, name+".json")
+
+        if os.path.exists(actionFile):
+            os.remove(actionFile)
+
+            write_to_log("Delete was successful.")
+            return jsonify({"message":"delete was successful"}), 200
+        
+        else:
+            write_to_log("File does not exsist, nothing to delete", "WARN")
+            return jsonify({"error":"no file found"}), 404
+            
+    except Exception as E:
+        write_to_log(str(E), "ERROR")
+        return jsonify({"error":str(E)})
 
 def start_server():
     global httpd

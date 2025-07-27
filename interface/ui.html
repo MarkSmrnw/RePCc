@@ -194,7 +194,7 @@ body{
                 <button id="addActionButton" data-bs-toggle="modal" data-bs-target="#addActionModal"></button>
             </div>
             <div class="col-3 d-flex">
-                <button id="removeActionButton" onclick="toggleDelete()"></button>
+                <button id="removeActionButton"></button>
             </div>
         </div>
 
@@ -296,7 +296,13 @@ body{
         const STAUSOBJ = document.getElementById("statusglobal")
 
         function actionPress(button) {
-            fetch("http://"+hostIp()+":8080/actions/start/"+button.id)
+            if (REMOVE_MODE == true) { 
+                
+                fetch("http://"+hostIp()+":8080/actions/delete/"+button.innerText)
+                button.remove()
+                setTimeout(function() {window.location.reload()}, 100)
+
+            } else { fetch("http://"+hostIp()+":8080/actions/start/"+button.innerText) }
         }
 
         const BUTTON_CONFIRMSHUTDOWN = document.getElementById("BUTTON_CONFIRMSHUTDOWN")

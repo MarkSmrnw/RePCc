@@ -4,6 +4,8 @@ const ADDACTIONCONFIRM = document.getElementById("confirmAddAction")
 const ACTIONSETMOUSEBUTTON = document.getElementById("ACTION_MOUSE")
 const ACTIONREMOVEBUTTON = document.getElementById("removeActionButton")
 
+const DEL_BUTTON = document.getElementById("removeActionButton")
+
 let INTERACTCOOLDOWN = false
 let CURSORPOS_X = null
 let CURSORPOS_Y = null
@@ -80,7 +82,6 @@ document.addEventListener("DOMContentLoaded", function() {
             if (response.ok) {
                 AddAction(NAMEINPUT.value)
             }
-            
 
         } else {
             if (IP) {STATUS_GLOBAL.innerText = "CURSOR POS HAS NOT BEEN SET!"}
@@ -116,14 +117,30 @@ document.addEventListener("DOMContentLoaded", function() {
         SetCurrentCursorPos()
     })
 
+    DEL_BUTTON.addEventListener("touchend", function(ev) {
+        ev.preventDefault()
+        if (REMOVE_MODE == true) {
+            REMOVE_MODE = false
+            removeStyles(false)
+        } else if (REMOVE_MODE == false) {
+            REMOVE_MODE = true
+            removeStyles(true)
+        }
+    })
+
+    DEL_BUTTON.addEventListener("click", function() {
+        removeStyles(true)
+    })
+
+
     // HERE IS THE REMOVE MODE PLEASE DONT OVERSEE IT AGAIN
 
     function removeStyles(apply=true) {
 
         if (apply) {
-            const DEL_BUTTON = document.getElementById("removeActionButton")
-
-            DEL_BUTTON.style = "border red 1px 1px 1px 1px"
+            DEL_BUTTON.style = "background-color: red;"
+        } else {
+            DEL_BUTTON.style = null
         }
 
     }
